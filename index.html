@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MangaUpdates Lists</title>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+        <script src="data.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#series').DataTable( {
+                    data: data,
+                    columns: columns
+                } );
+            } );
+        </script>
+    </head>
+    <body>
+        <table id="series" class="display" width="100%"></table>
+    </body>
+</html>
