@@ -1,5 +1,5 @@
 const columns = [
-    {title: "index"},
+    {title: "id"},
     {title: "A"},
     {title: "B1"},
     {title: "P(A|B1)"},
