@@ -14,21 +14,32 @@
                     data: data,
                     columns: columns,
                     columnDefs: [
-                        { width: '15%', class: 'title', targets: [1, 2, 5, 8, 11] },
-                        { width: '30px', class: 'probability', targets: [3,4,6,7,9,10,12,13] }
+                        {
+                            width: '15%',
+                            class: 'title',
+                            targets: [1, 2, 5, 8, 11],
+                        },
+                        {
+                            /*width: '30px',*/
+                            class: 'probability',
+                            targets: [3,4,6,7,9,10,12,13],
+                        },
+                        {
+                            class: 'seriesId',
+                            targets: [0],
+                        }
                     ],
                     /*scrollX: true,
                     fixedColumns: {
                         leftColumns: 2
-                    }*/
+                    },*/
+                    pageLength: 25,
                 } );
 
                 function colorCells () {
                     $("td.probability").each(function() {
                         var color = (1-this.innerText) * 256;
-                        this.style["backgroundColor"] = "rgb(0,0,"+color+")";
-                        this.style["color"] = "white";
-                        this.style["text-align"] = "center";
+                        this.style["backgroundColor"] = "rgb("+color+","+color+",255)";
                     });
                 }
 
@@ -42,13 +53,24 @@
             }
             .title {
                 border-left: 2px solid gray;
+                text-align: left;
             }
             tbody > tr:hover {
                 background-color: #f0f0f0 !important;
             }
+            td.probability {
+                color: black;
+                text-align: right;
+            }
+            table {
+                font-family: Arial;
+            }
+            td.seriesId {
+                text-align: right;
+            }
         </style>
     </head>
     <body>
-        <table id="series" class="hover compact order-column row-border" width="130%"></table>
+        <table id="series" class="hover compact row-border" width="150%"></table>
     </body>
 </html>
