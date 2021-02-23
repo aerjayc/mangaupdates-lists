@@ -6,24 +6,29 @@
         <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+        <!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/3.3.2/js/dataTables.fixedColumns.min.js"></script>-->
         <script src="data.js"></script>
         <script>
             $(document).ready(function() {
                 seriesTable = $("#series").DataTable( {
                     data: data,
-                    columns: columns
+                    columns: columns,
+                    columnDefs: [
+                        { width: '15%', class: 'title', targets: [1, 2, 5, 8, 11] },
+                        { width: '30px', class: 'probability', targets: [3,4,6,7,9,10,12,13] }
+                    ],
+                    /*scrollX: true,
+                    fixedColumns: {
+                        leftColumns: 2
+                    }*/
                 } );
 
                 function colorCells () {
-                    probabilityColumns = [3, 4, 6, 7, 9, 10, 12, 13];
-                    $("#series > tbody > tr").each(function() {
-                        for (var col of probabilityColumns) {
-                            var cell = this.children[col];
-
-                            var color = (1-cell.innerText) * 256;
-                            cell.style["backgroundColor"] = "rgb(0,0,"+color+")";
-                            cell.style["color"] = "white"
-                        }
+                    $("td.probability").each(function() {
+                        var color = (1-this.innerText) * 256;
+                        this.style["backgroundColor"] = "rgb(0,0,"+color+")";
+                        this.style["color"] = "white";
+                        this.style["text-align"] = "center";
                     });
                 }
 
@@ -31,8 +36,19 @@
                 seriesTable.on('draw', colorCells);
             } );
         </script>
+        <style>
+            body {
+                font-size: 0.9em;
+            }
+            .title {
+                border-left: 2px solid gray;
+            }
+            tbody > tr:hover {
+                background-color: #f0f0f0 !important;
+            }
+        </style>
     </head>
     <body>
-        <table id="series" class="display" width="100%"></table>
+        <table id="series" class="hover compact order-column row-border" width="130%"></table>
     </body>
 </html>
