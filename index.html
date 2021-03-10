@@ -8,6 +8,8 @@
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
         <!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/3.3.2/js/dataTables.fixedColumns.min.js"></script>-->
         <script src="data.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script>
             $(document).ready(function() {
                 seriesTable = $("#series").DataTable( {
@@ -48,7 +50,7 @@
             } );
         </script>
         <style>
-            body {
+            table {
                 font-size: 0.9em;
             }
             .title {
@@ -62,7 +64,7 @@
                 color: black;
                 text-align: right;
             }
-            table {
+            body {
                 font-family: Arial;
             }
             td.seriesId {
@@ -71,6 +73,105 @@
         </style>
     </head>
     <body>
+        <h1>Title</h1>
+
         <table id="series" class="hover compact row-border" width="150%"></table>
+
+        <h2>What is this?</h2>
+
+
+        <h3> TLDR </h3>
+        <p>
+        It's a table of the top ~3.5k series in MangaUpdates, and the series
+        with which they share their audience the most. The data is based on the
+        public list of MangaUpdates users that added these series to their
+        <code>read</code>/<code>complete</code>/<code>hold</code> lists.
+        A high \(P(A|B)\) means a larger intersection between series \(A\)
+        and \(B\) <em>relative to series \(B\)'s size</em>. More concretely:
+        </p>
+
+        <blockquote>
+        \(P(A|B)\) is the fraction of the readers of \(B\) that have also read \(A\).
+        </blockquote>
+
+
+        <h3>Details</h3>
+
+        <h4>What does P(A|B) actually mean?</h4>
+        <p>
+        Each row represents a single series, which is the title under the column
+        \(A\). The \(B\)'s are chosen by finding out the series that maximizes
+        \(P(A|B)\). In other words, the \(B\)'s are the series that have the
+        largest intersection with \(A\) in proportion to \(B\).
+        </p>
+        <p>
+        It's easier to show in symbols:
+        </p>
+        <blockquote>
+            Let \(A\) and \(B\) be series from the top ~3.5k series in MangaUpdates,
+            and \(S_A, S_B\) be the set of MangaUpdates users that added \(A\)
+            and \(B\) (respectively) to either their <code>read</code>,
+            <code>complete</code>, or <code>hold</code> lists. Then we define
+
+                \[ P(A|B) := \frac{\left|S_A \cap S_B\right|}{\left|S_B\right|}. \]
+
+            We just borrowed the notation from probability. To stretch the analogy
+            to probability a bit, you can think of this value as "the probability
+            that you'll <em>enjoy</em> \(A\) given that you've enjoyed \(B\)."
+            This is assuming that the users that add series to their
+            <code>read</code>, <code>complete</code>, or <code>hold</code> lists
+            tend to enjoy them.
+        </blockquote>
+
+        <p>
+        For each series \(A\), we're trying to get the \(B\) that would maximize
+        this value \(P(A|B)\). \(B_1, B_2, ...\) are those series. I.e., the series
+        that shares a lot of its readers with \(A\). If you like \(B\), then
+        you probably like \(A\)!.
+        </p>
+
+        <h4>What's the difference between P(A|B) and P(B|A)?</h4>
+
+
+        <h4>Why not maximize P(B|A) instead?</h4>
+
+        <p>
+        In the table above we're just showing the top 4 \(B\) series that maximize
+        \(P(A|B)\). But wouldn't a more natural way to proceed be to get the
+        series \(B\) that would maximize \(P(B|A)\), i.e. the series that \(A\)
+        readers read the most? This was what I first tried, but fairly quickly
+        I found that it just spits out popular series, with almost no relation
+        to what \(A\) actually is. Most of them are either
+        Naruto/One Piece/Bleach/Shingeki no Kyojin/etc. To give a sense of this,
+        I checked the number of unique \(B1\)'s when \(P(A|B)\) vs \(P(B|A)\) is
+        being maximized (this shows the relative diversity of recommendations
+        of each approach). \(P(A|B)\) gives <code>1284</code> unique \(B1\)'s, while
+        \(P(B|A)\) gives a mere <code>311</code>.
+        </p>
+
+        <p>
+        In other words, for a given \(A\), maximizing \(P(A|B)\)
+        is likely to yield \(B\)'s with comparatively small readerships, while
+        maximizing \(P(B|A)\) yields \(B\)'s with larger readerships.
+        This makes sense, if you look at the definitions of the two:
+
+            \[ P(A|B) := \frac{\left|S_A \cap S_B\right|}{\left|S_B\right|}. \]
+            \[ P(B|A) := \frac{\left|S_A \cap S_B\right|}{\left|S_A\right|}. \]
+
+        Maximizing \(P(A|B)\) generally ends up with low \(|S_B|\)'s
+        because it's on the denominator (so popular series are penalized).
+        As for \(P(B|A)\), \(B\) is present only on the numerator, so it can
+        make \(S_A\) as big as it wants without penalty.
+        </p>
+
+
+        <h2>Where/how did you get the data?</h2>
+
+        <p>
+        I was originally trying to make an (unnoficial) API for MangaUpdates,
+        and just used that to scrape the (publicly-available) data. If you want
+        to try it out, here's a link: .
+        </p>
+
     </body>
 </html>
